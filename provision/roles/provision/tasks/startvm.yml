@@ -1,0 +1,35 @@
+---
+#
+# startvm - Start the VM we made in earlier steps
+#
+
+  - name: Start the VM up
+    virt:
+      autostart: true
+      name: "{{ hostname }}"
+      state: running
+
+  - name: Set VM to autostart
+    virt:
+      autostart: true
+      name: "{{ hostname }}"
+      state: running
+
+      
+  - name: Verify VM is running
+    virt:
+      command: list_vms
+      state: running
+    register: vmlist
+
+  - debug: msg="{{ vmlist.list_vms }}"
+    when: vmlist is defined
+
+  - name: Wait for VM to become available before continuing
+    delegate_to: localhost
+    wait_for:
+      host: "{{ guest_ip_addr }}"
+      port: 22
+      timeout: 300
+      delay: 10
+

@@ -1,0 +1,12 @@
+---
+# vars file for provision
+
+    # ipam play
+    subnet_id: "{{ ipam_subnet_id.json.data[0].id }}"
+    guest_ip_addr: "{{ ipam_output.json.data }}"
+
+    # dhcp play
+    mac_json: "{{ vminfo['get_xml'] | xml_to_json }}"
+    guest_mac_addr: "{{ mac_json.domain.devices.interface.mac.address }}"
+    dhcp_regen_cmd: 'find /etc/dhcp/dhcpd-static/ -type f -iname "*.conf" -exec cat {} >> /etc/dhcp/dhcpd-static.conf \;'
+

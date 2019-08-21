@@ -1,0 +1,20 @@
+---
+
+  - name: Load kickstarter file to toolbox
+    delegate_to: "{{ kickstart_server}}"
+    delegate_facts: True
+    template: 
+      src: ks.cfg.j2
+      dest: "/srv/ks/ks-{{ hostname }}.cfg"
+      force: no
+    when: vmxml_exists.stat.exists == False
+
+  - name: Load installer script to node
+    template:
+      src: virtinstall.j2
+      dest: "/home/localuser/installers/virtinstall-{{ hostname }}.sh"
+      force: no
+      mode: 0755
+      owner: localuser
+      group: localuser
+    when: vmxml_exists.stat.exists == False

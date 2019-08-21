@@ -1,0 +1,17 @@
+---
+#
+# Post-install checks
+#
+
+  - debug: msg="VM '{{ hostname }}' creation was skipped."
+    when: installvm_return.skipped is defined and installvm_return.skipped == True
+
+  - debug: msg="VM '{{ hostname }}' created successfully."
+    when: installvm_return.rc is defined and installvm_return.rc == 0
+
+  - debug: msg="VM '{{ hostname }}' had problems during install.  Please check logs on the node."
+    when: installvm_return.rc is defined and installvm_return.rc != 0
+
+  - meta: end_play
+    when: installvm_return.rc is defined and installvm_return.rc != 0
+

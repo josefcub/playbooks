@@ -1,0 +1,32 @@
+---
+
+    - name: Get Requested Subnet ID from CIDR
+      uri: 
+        url: "{{ phpipam_api_url }}/apiclient/subnets/cidr/{{ subnet_cidr }}"
+        headers:
+          token: "{{ phpipam_apikey }}"
+        method: GET
+        body_format: json
+        validate_certs: no
+        return_content: true
+        status_code: 200
+      register: ipam_subnet_id
+
+    - name: Get an IP allocation from PHPIPAM
+      uri: 
+        url: "{{ phpipam_api_url }}/apiclient/addresses/first_free/{{ subnet_id }}/"
+        headers:
+          token: "{{ phpipam_apikey }}"
+        method: POST
+        body: "{
+                 'hostname':'{{ hostname }}',
+                 'description':'Created for {{ fqdn }} by {{ lookup('env','USER') }} on {{ ansible_date_time.date }}'
+               }"
+        body_format: json
+        validate_certs: no
+        return_content: true
+        status_code: 201
+      register: ipam_output
+
+    - debug: msg="{{ guest_ip_addr }}"
+

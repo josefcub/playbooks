@@ -1,0 +1,16 @@
+#!/bin/bash
+
+sudo /usr/bin/virt-install \
+-n "{{ hostname }}" \
+-r "{{ memory }}" \
+--vcpus="{{ cpus }}" \
+--accelerate \
+-v \
+-w bridge:intbr0 \
+--disk path=/var/lib/libvirt/images/{{ hostname }}.img,size={{ disk_size }} \
+-l "/var/lib/libvirt/images/cd/CentOS-7-x86_64-Minimal-1810.iso" \
+--nographics \
+--noreboot \
+-x "ks=http://192.168.253.10/ks/ks-{{ hostname }}.cfg ip=::192.168.253.1::{{ hostname }}-installer:eth0:dhcp: nameserver=192.168.253.1 console=ttyS0" \
+1>/home/localuser/installers-logs/virtinstall_{{ hostname }}_$(date +%s).log 2>&1
+

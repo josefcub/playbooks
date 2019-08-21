@@ -1,0 +1,50 @@
+---
+- name: Provision a VM
+  hosts: "hosts:{{ provisioner }}"
+  become: true
+
+  #
+  # Variables needing customized in order for the roles to work.
+  #
+  vars:
+
+    #
+    # These can be edited here, and/or specified with -e
+    # on the command line.
+    #
+    provisioner: "thinkpad"
+    kickstart_server: "toolbox"
+    
+    subnet_cidr: "192.168.253.0/24"
+    domain: "satx.thinkpad"
+
+
+    #
+    # Customize these to match your installation.
+    #
+    phpipam_api_url: "https://toolbox.satx/phpipam/api"
+    phpipam_apikey: "Your API Key Here"
+
+    libre_api_url: "http://toolbox.satx/api/v0"
+    libre_api_token: "Your API Key Here"
+
+    toolbox_ssh_key: "Your Public Key Here"
+
+    # How to generate the below:
+    # $ python -c 'import crypt,getpass;pw=getpass.getpass();print(crypt.crypt(pw) if (pw==getpass.getpass("Confirm: ")) else exit())'
+
+    root_pw_crypted: "Your Encrypted Hash Here"
+
+    localuser_pw_crypted: "Your Other Encrypted Hash Here"
+
+    # 
+    # These shouldn't be messed with.  Seriously.
+    #
+    
+    # Generic applicable to all roles, so it's stashed here.
+    fqdn: "{{ hostname }}.{{ domain }}"
+
+  roles:
+  - provision
+  - post-provision
+

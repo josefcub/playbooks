@@ -1,0 +1,26 @@
+---
+
+  - name:  Install package 'curl'
+    yum:
+      name: curl
+      state: present
+
+  - name: Add Host to LibreNMS
+    uri:
+      url: "{{ libre_api_url }}/devices"
+      headers:
+        X-Auth-Token: "{{ libre_api_token }}"
+      method: POST
+      body: {'hostname':'{{ fqdn }}','version':'v2c','community':'tpadmgmt'}
+      body_format: json
+      validate_certs: no
+      return_content: true
+    register: librenms_addhost_output
+
+  - name: Verify LibreNMS API Call Success
+    debug: 
+      msg: "{{ librenms_addhost_output.content }}"
+    when: librenms_addhost_output.json.status == 'error'
+
+
+ 

@@ -1,0 +1,12 @@
+---
+#
+# Run installation script on the node
+#
+
+  - name: Install VM
+    shell: "/home/localuser/installers/virtinstall-{{ hostname }}.sh"
+    args: 
+     creates: "/etc/libvirt/qemu/{{ hostname }}.xml"
+    register: installvm_return
+    when: vmxml_exists.stat.exists == False
+

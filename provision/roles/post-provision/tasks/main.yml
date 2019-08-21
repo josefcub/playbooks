@@ -1,0 +1,15 @@
+---
+# tasks file for post-provision
+
+     - name: Configure Firewall
+       delegate_to: "{{ guest_ip_addr }}"
+       import_tasks: firewall.yml
+
+     - name: Install and Configure SNMPd
+       delegate_to: "{{ guest_ip_addr }}"
+       import_tasks: snmpd.yml
+
+     - name: Add Guest to LibreNMS
+       delegate_to: "{{ guest_ip_addr }}"
+       import_tasks: librenms.yml
+

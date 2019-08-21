@@ -1,0 +1,76 @@
+---
+# tasks file for updating the firewall configuration
+
+  # Prereq, just in case - This shouldn't really be needed in cent 7 core
+  - name: install python-firewall
+    yum:
+      name: python-firewall
+      state: present
+
+  - name: verify firewall is up
+    service:
+      name=firewalld state=started enabled=true
+
+  # just in case this is still a thing
+  - name: close port 161/udp from anywhere
+    firewalld:
+      immediate: yes
+      permanent: yes
+      port: 161/udp
+      state: disabled
+
+  # The right way apparently involves creating a zone, so let's create our first here.
+  - name: add zone infra for infrastructure-only services
+    firewalld:
+      permanent: yes
+      zone: infra
+      state: present
+
+  # We should be able to do this from the firewalld module. :p
+  - name: restart firewalld to access new zone
+    service: name=firewalld state=restarted 
+
+  - name: add toolbox as source IP for infra zone
+    firewalld:
+      permanent: yes
+      immediate: yes
+      zone: infra
+      source: 192.168.253.10/32
+      state: enabled
+
+  - name: add thinkpad-core-rtr01 to infra zone for backup DHCP
+    firewalld:
+      permanent: yes
+      immediate: yes
+      zone: infra
+      source: 192.168.253.2/32
+      state: enabled
+
+  - name: add dns.satx to infra zone for DHCP
+    firewalld:
+      permanent: yes
+      immediate: yes
+      zone: infra
+      source: 192.168.253.3/32
+      state: enabled
+
+  - name: add snmp service to infra zone
+    firewalld:
+      permanent: yes
+      immediate: yes
+      zone: infra
+      service: snmp
+      state: enabled
+
+  - name: add dhcp service to infra zone
+    firewalld:
+      permanent: yes
+      immediate: yes
+      zone: infra
+      service: dhcp
+      state: enabled
+
+  # We do this a second time to ensure the changes take hold.
+  - name: restart firewalld to ensure all services are available
+    service: name=firewalld state=restarted 
+

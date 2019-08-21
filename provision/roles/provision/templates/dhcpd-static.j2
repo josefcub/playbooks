@@ -1,0 +1,15 @@
+
+host {{ hostname }}
+{
+
+	option host-name		"{{ fqdn }}";
+	hardware ethernet		{{ guest_mac_addr }};
+	fixed-address			{{ guest_ip_addr }};
+
+	option domain-name-servers	192.168.253.3;
+	option domain-name		"{{ domain }}";
+	option routers			192.168.253.2;
+	option broadcast-address	192.168.253.255;
+
+}
+

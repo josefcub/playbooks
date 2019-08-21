@@ -1,0 +1,49 @@
+---
+#
+# Preflight checks - Primarily, are the variables we need defined?
+#
+
+  - name: Preflight Verification - Hostname
+    debug: msg="Required var 'hostname' is not defined.  Aborting."
+    when: hostname is not defined
+
+  - meta: end_play
+    when: hostname is not defined
+
+  - name: Preflight Verification - Memory Size
+    debug: msg="Required 'memory' is not defined.  Aborting."
+    when: memory is not defined
+
+  - meta: end_play
+    when: memory is not defined
+
+  - name: Preflight Verification - CPUs
+    debug: msg="Required 'cpus' is not defined.  Aborting."
+    when: cpus is not defined
+
+  - meta: end_play
+    when: cpus is not defined
+
+  - name: Preflight Verification - Disk Space
+    debug: msg="Required var 'disk_size' is not defined.  Aborting."
+    when: disk_size is not defined
+
+  - meta: end_play
+    when: disk_size is not defined
+
+  - name: Preflight Verification - VM Ansible Group
+    debug: msg="Required var 'group' is not defined.  Aborting."
+    when: group is not defined
+
+  - meta: end_play
+    when: group is not defined
+
+  # Verification, and not necessarily a fatal error if we're trying to auto-insert into ansible
+  - name: Verify VM Existence
+    stat:
+      path: "/etc/libvirt/qemu/{{ hostname }}.xml"
+    register: vmxml_exists
+
+  - debug: msg="VM '{{ hostname }}' already exists, install steps will be skipped."
+    when: vmxml_exists.stat.exists == True
+ 

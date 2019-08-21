@@ -1,0 +1,52 @@
+# Language and Time Zone Support
+keyboard us
+lang en_US
+timezone America/Chicago
+
+# Networking and Hostname
+network --bootproto=dhcp --hostname {{ hostname }} --nameserver=192.168.253.3
+firewall --enabled --port=22:tcp
+
+# Partitioning
+clearpart --all --initlabel
+part / --fstype="ext4" --grow --size=1
+part swap --recommended
+bootloader --location=mbr
+zerombr
+
+# Auth, Priv, and Users
+auth  --useshadow  --enablemd5
+selinux --enforcing
+
+rootpw --iscrypted {{ root_pw_crypted }} 
+
+user --name=localuser --groups=wheel --password={{ localuser_pw_crypted }} --iscrypted 
+
+# Uninteractive install options
+text
+firstboot --disable
+logging --level=info
+skipx
+install
+poweroff
+
+%packages
+@core
+--nobase
+%end
+
+%post
+( 
+# sed -i 's/LABEL=\//& console=ttyS0/' /etc/grub.conf
+echo 'S0:12345:respawn:/sbin/agetty ttyS0 115200' >> /etc/inittab
+echo "ttyS0" >> /etc/securetty
+echo 'IPV6INIT=no' >> /etc/sysconfig/network
+echo 'install ipv6 /bin/true' >> /etc/modprobe.conf
+echo '%wheel        ALL=(ALL)       NOPASSWD: ALL' >>/etc/sudoers
+sed -i.bak 's/PasswordAuthentication yes/PasswordAuthentication no/' /etc/ssh/sshd_config
+sed -i.bak 's/#PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+mkdir '/home/localuser/.ssh'
+echo '{{ toolbox_ssh_key }}' >> /home/localuser/.ssh/authorized_keys
+) 1>/root/post_install.log 2>&1
+%end
+

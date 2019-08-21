@@ -1,0 +1,15 @@
+---
+#
+# Add the new VM to ansible's groups
+#
+
+# StackOverflow calls this a dirty hack.  I agree.
+- name: Add New VM to Inventory
+  delegate_to: localhost
+  delegate_facts: True
+  ini_file:
+    dest: /etc/ansible/hosts
+    section: "{{ group }}"
+    option: "{{ hostname}}.satx ansible_host"
+    value: "{{ hostname }}.satx"
+    no_extra_spaces: yes

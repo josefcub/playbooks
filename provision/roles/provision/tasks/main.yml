@@ -1,0 +1,19 @@
+---
+# tasks file for provision-vm
+
+  # Verify variables
+  # Load templates onto node in the right places
+  # Execute vinst.sh script
+  # Start VM
+  # Add host to Ansible hosts file
+
+  - name: Preflight
+    import_tasks: preflight.yml
+
+  - import_tasks: ipam.yml
+  - import_tasks: templates.yml
+  - import_tasks: install.yml
+  - import_tasks: postflight.yml
+  - import_tasks: dhcp.yml
+  - import_tasks: ansible.yml
+  - import_tasks: startvm.yml

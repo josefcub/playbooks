@@ -1,0 +1,37 @@
+---
+
+    - name: Pull MAC address from libvirt XML file
+      delegate_to: "{{ provisioner }}"
+      virt:
+        command: get_xml
+        name: "{{ hostname }}"
+      register: vminfo
+
+    - debug: msg="{{ guest_mac_addr }}"
+
+    - name: Create static DHCP definition
+      delegate_to: dns
+      template:
+        src: dhcpd-static.j2
+        dest: "/etc/dhcp/dhcpd-static/{{ hostname }}.conf"
+        force: yes
+        mode: "0644"
+        owner: root
+        group: root
+
+    - name: Remove old static DHCP definitions file
+      delegate_to: dns
+      file: 
+        name: "/etc/dhcp/dhcpd-static.conf"
+        state: absent
+
+    - name: Recreate /etc/dhcp/dhcpd-static.conf on DHCP Server
+      delegate_to: dns
+      shell: "{{ dhcp_regen_cmd }}"
+
+    - name: Restart DHCP server
+      delegate_to: dns
+      service: 
+        name: dhcpd
+        state: restarted
+
