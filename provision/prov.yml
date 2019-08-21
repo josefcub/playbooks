@@ -1,6 +1,6 @@
 ---
 - name: Provision a VM
-  hosts: "hosts:{{ provisioner }}"
+  hosts: "hosts"
   become: true
 
   #
@@ -12,7 +12,7 @@
     # These can be edited here, and/or specified with -e
     # on the command line.
     #
-    provisioner: "thinkpad"
+    provisioner: "{{ inventory_hostname }}"
     kickstart_server: "toolbox"
     
     subnet_cidr: "192.168.253.0/24"
