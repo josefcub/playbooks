@@ -10,6 +10,6 @@
   ini_file:
     dest: /etc/ansible/hosts
     section: "{{ group }}"
-    option: "{{ hostname}}.satx ansible_host"
-    value: "{{ hostname }}.satx"
+    option: "{{ hostname}}.{{ domain }} ansible_host"
+    value: "{{ hostname }}.{{ domain }}"
     no_extra_spaces: yes
