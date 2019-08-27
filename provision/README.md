@@ -6,7 +6,7 @@ This playbook does the initial provisioning of a CentOS 7 VM.  The script requir
 
 Invocation Example:
 
-     $ ansible-playbook ./prov.yml -e "hostname=docker" -e "memory=1024" -e "cpus=1" -e "disk_size=40" -e "group=docker"
+     $ ansible-playbook ./prov.yml -e "hostname=docker memory=1024 cpus=1 disk_size=40 group=docker"
 
  * __hostname__ is the hostname that will be assigned to the VM both internally and as the ansible inventory name.
  * __memory__ is specified in megabytes,
