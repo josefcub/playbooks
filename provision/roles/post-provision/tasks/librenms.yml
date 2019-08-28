@@ -16,6 +16,9 @@
       validate_certs: no
       return_content: true
     register: librenms_addhost_output
+    retries: 10
+    delay: 1 
+    until: librenms_addhost_output.json.status != 'error'
 
   - name: Verify LibreNMS API Call Success
     debug: 
