@@ -1,11 +1,3 @@
 ---
 # handlers file for snmp
 
-    - name: reload systemd config
-      delegate_to: "{{ guest_ip_addr }}"
-      systemd: daemon_reload=yes
-
-    - name: restart snmpd
-      delegate_to: "{{ guest_ip_addr }}"
-      service: name=snmpd enabled=true state=restarted
-

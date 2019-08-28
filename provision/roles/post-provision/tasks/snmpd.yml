@@ -24,7 +24,6 @@
         state: directory
 
     - name: insert systemd override for snmpd
-      notify: reload systemd config
       copy:
         backup: false
         force: no
@@ -34,8 +33,11 @@
         src: override.conf
         dest: /etc/systemd/system/snmpd.service.d/override.conf
 
+    - name: reload systemd config
+      delegate_to: "{{ guest_ip_addr }}"
+      systemd: daemon_reload=yes
+
     - name: insert snmpd configuration file
-      notify: restart snmpd
       copy:
         backup: true
         force: yes
@@ -44,4 +46,8 @@
         group: 'root'
         src: snmpd.conf
         dest: /etc/snmp/snmpd.conf
+
+    - name: restart snmpd
+      delegate_to: "{{ guest_ip_addr }}"
+      service: name=snmpd enabled=true state=restarted
 
